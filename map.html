@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Пиратская карта с кладом</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #2b1c07;
+      font-family: 'Pirata One', cursive, serif;
+      overflow: hidden;
+    }
+    #map {
+      height: 100vh;
+      width: 100vw;
+      min-height: 100svh;
+      filter: sepia(0.8) contrast(1.2) brightness(0.9);
+      border: 8px solid #7b6043;
+      box-shadow: 0 0 30px #000a, 0 0 0 18px #efd5b4 inset;
+      border-radius: 24px;
+      margin: 0 auto;
+      display: block;
+      transition: border-radius 0.2s;
+    }
+    .pirate-x {
+      font-size: 2.5rem;
+      color: #ff2222;
+      text-shadow: 1px 1px 8px #fff9, 2px 2px 0 #000b;
+      font-family: 'Pirata One', cursive, serif;
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+    }
+    #route-btn {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      background: #ecd9be;
+      color: #571a0b;
+      border: 2px solid #7b6043;
+      border-radius: 10px;
+      font-family: 'Pirata One', cursive, serif;
+      font-size: 1.25rem;
+      padding: 8px 20px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0003;
+      transition: background 0.2s;
+    }
+    #route-btn:active {
+      background: #f5e3cb;
+    }
+    @media (max-width: 700px) {
+      #map { border-width: 4px; border-radius: 14px; box-shadow: 0 0 12px #0009, 0 0 0 9px #efd5b488 inset; }
+      .pirate-x { font-size: 2.1rem; }
+      #route-btn { font-size: 1.1rem; padding: 7px 14px; top: 10px;}
+    }
+    .leaflet-popup-content-wrapper {
+      background: #ecd9be;
+      font-family: 'Pirata One', cursive, serif;
+      font-size: 1.1rem;
+      color: #542500;
+      border-radius: 10px;
+      border: 2px solid #7b6043;
+    }
+  </style>
+</head>
+<body>
+  <button id="route-btn">Показать маршрут к кладу</button>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const treasureLatLng = [55.7558, 37.6173]; // Пример (Москва)
+    let routeLine; // Для хранения маршрута
+
+    // Карта
+    const map = L.map('map', {
+      zoomControl: false,
+      attributionControl: false
+    }).setView(treasureLatLng, 13);
+
+    // Слой карты
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+    // Крестик
+    const pirateX = L.divIcon({
+      className: 'pirate-x',
+      html: '✖',
+      iconSize: [40, 40],
+      iconAnchor: [20, 20]
+    });
+    const marker = L.marker(treasureLatLng, {icon: pirateX}).addTo(map)
+      .bindPopup('<b>Здесь зарыт клад!</b>');
+    setTimeout(() => marker.openPopup(), 500);
+
+    window.addEventListener('resize', () => map.invalidateSize());
+
+    // Кнопка маршрута
+    document.getElementById('route-btn').onclick = function() {
+      if (routeLine) {
+        map.removeLayer(routeLine);
+        routeLine = null;
+      }
+      if (!navigator.geolocation) {
+        alert("Ваш браузер не поддерживает определение местоположения.");
+        return;
+      }
+      document.getElementById('route-btn').innerText = "Определяем местоположение...";
+      navigator.geolocation.getCurrentPosition(success, error, {enableHighAccuracy: true});
+    };
+
+    function error(err) {
+      alert("Не удалось определить местоположение :(");
+      document.getElementById('route-btn').innerText = "Показать маршрут к кладу";
+    }
+
+    function success(pos) {
+      const userLatLng = [pos.coords.latitude, pos.coords.longitude];
+      document.getElementById('route-btn').innerText = "Строим маршрут...";
+      // Получаем маршрут через OSRM (бесплатно и просто)
+      const url = `https://router.project-osrm.org/route/v1/foot/${userLatLng[1]},${userLatLng[0]};${treasureLatLng[1]},${treasureLatLng[0]}?overview=full&geometries=geojson&alternatives=false&steps=false`;
+
+      fetch(url)
+        .then(resp => resp.json())
+        .then(data => {
+          if (!data.routes || !data.routes.length) throw new Error('Нет маршрута');
+          const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+          routeLine = L.polyline(coords, {color: 'red', weight: 4, opacity: 0.8, dashArray: '6, 10'}).addTo(map);
+          map.fitBounds(routeLine.getBounds(), {padding: [40,40]});
+          L.marker(userLatLng).addTo(map).bindPopup("Ваше местоположение").openPopup();
+          document.getElementById('route-btn').innerText = "Маршрут построен!";
+          setTimeout(()=>document.getElementById('route-btn').innerText = "Показать маршрут к кладу", 4000);
+        })
+        .catch(()=>{
+          alert("Не удалось построить маршрут.");
+          document.getElementById('route-btn').innerText = "Показать маршрут к кладу";
+        });
+    }
+  </script>
+</body>
+</html>
