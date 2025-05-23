@@ -2,13 +2,17 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <title>Сокровище Роджера</title>
+  
+  <!-- Подключение шрифта Pirata One -->
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+  
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Pirata One', serif;
+      font-family: 'Pirata One', cursive;
       background-color: #000;
       color: #fff;
       text-align: center;
@@ -17,9 +21,10 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQitAX80TTevgLHDBzQvNhzob0JkLNvr3q8Nw&s'); /* пиратский фон */
+      background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQitAX80TTevgLHDBzQvNhzob0JkLNvr3q8Nw&s');
       background-size: cover;
       background-position: center;
+      overflow: hidden;
     }
 
     .overlay {
@@ -33,6 +38,7 @@
     .content {
       z-index: 1;
       position: relative;
+      padding: 20px;
     }
 
     h1 {
@@ -64,15 +70,22 @@
   </div>
 
   <script>
-    const launchTime = new Date("2025-05-22T12:00:00"); // ЗАДАЙ время запуска
+    const launchTime = new Date("2025-05-22T12:00:00"); // УСТАНОВИ точное время запуска
     const countdown = document.getElementById('countdown');
+    const now = new Date();
+
+    // Проверка: уже запускался переход?
+    if (localStorage.getItem('quest_started') === 'true') {
+      window.location.href = "main.html";
+    }
 
     function updateCountdown() {
       const now = new Date();
       const diff = launchTime - now;
 
       if (diff <= 0) {
-        window.location.href = "main.html"; // переход на квест
+        localStorage.setItem('quest_started', 'true'); // чтобы не повторять
+        window.location.href = "main.html";
         return;
       }
 
