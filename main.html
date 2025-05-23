@@ -4,15 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <title>Сокровище Роджера</title>
-  
-  <!-- Подключение шрифта Pirata One -->
+
+  <!-- Шрифты -->
   <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Forum&display=swap" rel="stylesheet">
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Pirata One', cursive;
+      font-family: 'Pirata One', 'Forum', serif;
       background-color: #000;
       color: #fff;
       text-align: center;
@@ -21,71 +26,104 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQitAX80TTevgLHDBzQvNhzob0JkLNvr3q8Nw&s');
+      background-image: url('https://i.pinimg.com/736x/c3/1e/73/c31e73e21edf2a69a93637a14dc32065.jpg'); /* красивый пиратский фон */
       background-size: cover;
       background-position: center;
       overflow: hidden;
     }
 
-    .overlay {
-      background-color: rgba(0, 0, 0, 0.75);
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 0;
-    }
+	.overlay {
+	  background-color: rgba(0, 0, 0, 0.5);
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  width: 100%;
+	  height: 100%;
+	  z-index: 0; /* Ниже .content */
+	}
 
-    .content {
-      z-index: 1;
-      position: relative;
-      padding: 20px;
-    }
+	.content {
+	  z-index: 10; /* Повышаем приоритет */
+	  position: relative;
+	  padding: 20px;
+	}
 
     h1 {
       font-size: 3em;
       margin-bottom: 20px;
-      text-shadow: 2px 2px 5px #000;
+      text-shadow: 3px 3px 6px #000;
     }
 
     #countdown {
-      font-size: 2em;
-      margin-top: 10px;
+      font-size: 2.5em;
       color: #ffd700;
       text-shadow: 1px 1px 4px #000;
     }
 
+    .button {
+      margin-top: 30px;
+      padding: 14px 32px;
+      background-color: #d4af37;
+      color: #000;
+      font-size: 1.4em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: 'Pirata One', 'Forum', serif;
+      display: none;
+      box-shadow: 0 0 10px #ffd700;
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #ffd700;
+    }
+
     img.skull {
-      width: 150px;
+      width: 140px;
       height: auto;
       margin-bottom: 20px;
+      filter: drop-shadow(0 0 5px #000);
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2em;
+      }
+      #countdown {
+        font-size: 1.6em;
+      }
+      .button {
+        font-size: 1.1em;
+        padding: 10px 20px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="overlay"></div>
-  <div class="content">
-    <img src="https://cdn-icons-png.flaticon.com/512/461/461445.png" alt="Пиратский череп" class="skull">
-    <h1>Время ещё не пришло...</h1>
-    <div id="countdown">Загрузка...</div>
-  </div>
+<div class="content">
+  <img src="https://cdn-icons-png.flaticon.com/512/461/461445.png" alt="Пиратский череп" class="skull">
+  <h1 id="title">Время ещё не пришло...</h1>
+  <div id="countdown">Загрузка...</div>
+  <button class="button" id="enterBtn" onclick="window.location.href='main.html'">Войти в квест</button>
+</div>
 
   <script>
-    const launchTime = new Date("2025-05-22T12:00:00"); // УСТАНОВИ точное время запуска
+    const launchTime = new Date("2025-06-14T12:00:00"); // Укажи нужную дату и время начала
     const countdown = document.getElementById('countdown');
-    const now = new Date();
-
-    // Проверка: уже запускался переход?
-    if (localStorage.getItem('quest_started') === 'true') {
-      window.location.href = "main.html";
-    }
+    const enterBtn = document.getElementById('enterBtn');
+    const title = document.getElementById('title');
 
     function updateCountdown() {
       const now = new Date();
       const diff = launchTime - now;
 
       if (diff <= 0) {
-        localStorage.setItem('quest_started', 'true'); // чтобы не повторять
-        window.location.href = "main.html";
+        countdown.textContent = "Квест активен!";
+        title.textContent = "Квест уже начался";
+        enterBtn.style.display = "inline-block";
+        localStorage.setItem('quest_started', 'true');
         return;
       }
 
