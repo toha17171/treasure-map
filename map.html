@@ -2,240 +2,89 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Пиратская карта с кладом</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Сокровище Роджера</title>
   <style>
-    html, body {
-      margin: 0; padding: 0; height: 100%;
-      font-family: 'Pirata One', cursive, serif;
-      background: #efe0c5;
-      overscroll-behavior: contain;
-      width: 100vw; height: 100dvh;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-    #map-container {
-      position: relative;
-      width: 100vw; height: 100dvh;
-      max-width: 100vw; max-height: 100dvh;
-      background: #efe0c5;
-      overflow: hidden;
-    }
-    #sepia-layer {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100vw; height: 100dvh;
-      z-index: 1;
-      pointer-events: none;
-      filter: sepia(0.72) contrast(1.12) brightness(0.96);
-    }
-    #map {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100vw; height: 100dvh;
-      z-index: 2;
-      background: transparent;
-    }
-    #route-btn {
-      position: fixed;
-      top: env(safe-area-inset-top, 14px);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 120;
-      background: #e8c47c linear-gradient(135deg, #e8c47c 70%, #e4ad42 100%);
-      color: #422505;
-      border: 3px solid #8b6f36;
-      border-radius: 18px;
-      font-family: 'Pirata One', cursive, serif;
-      font-size: 1.24rem;
-      padding: 12px 22px 12px 22px;
-      cursor: pointer;
-      box-shadow: 0 4px 14px #a6873d49, 0 1px 0 #fff9 inset;
-      letter-spacing: 0.03em;
-      display: flex;
-      align-items: center;
-      gap: 0.7em;
-      text-shadow: 1px 1px 3px #ffef, 2px 2px 0 #d1b57666;
-      opacity: 0.98;
-      min-width: 200px;
-      max-width: 92vw;
-    }
-    #route-btn:active {
-      background: #f5e3cb;
-      color: #a86a06;
-      box-shadow: 0 2px 8px #7b6043b9;
-    }
-    .pirate-x {
-      width: 48px; height: 48px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.9rem;
-      color: #ff2222;
-      text-shadow: 2px 2px 8px #fff, 3px 3px 0 #000a;
-      font-family: 'Pirata One', cursive, serif;
-      user-select: none;
-      pointer-events: none;
-      transform: rotate(-13deg);
-    }
-    .pirate-compass {
-      font-size: 2.2rem;
-      text-shadow: 1px 1px 7px #fff9, 2px 2px 0 #1a1510b0;
-      user-select: none;
-      pointer-events: none;
-      filter: drop-shadow(2px 4px 2px #fff3);
-    }
-    .leaflet-popup-content-wrapper {
-      background: #ecd9be;
-      font-family: 'Pirata One', cursive, serif;
-      font-size: 1.02rem;
-      color: #542500;
-      border-radius: 10px;
-      border: 2px solid #7b6043;
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Pirata One', serif;
+      background-color: #000;
+      color: #fff;
       text-align: center;
-      box-shadow: 0 2px 8px #a47a2e66;
-    }
-    /* Нижний оверлей */
-    #bottom-overlay {
-      position: fixed;
-      left: 0; right: 0; bottom: 0;
-      height: 80px;
-      background: linear-gradient(0deg, #ecd9be 92%, #ecd9be77 99%, transparent 100%);
-      box-shadow: 0 -3px 30px #7d694866;
-      z-index: 110;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       justify-content: center;
-      pointer-events: none; /* убрать, если оверлей нужен интерактивный */
-      padding-bottom: env(safe-area-inset-bottom, 0px);
+      align-items: center;
+      height: 100vh;
+      background-image: url('https://i.imgur.com/SIaT5EO.png'); /* пиратский фон */
+      background-size: cover;
+      background-position: center;
     }
-    #bottom-overlay .overlay-text {
-      font-family: 'Pirata One', cursive, serif;
-      color: #915306;
-      font-size: 1.18rem;
-      text-shadow: 1px 1px 5px #fff7;
-      opacity: 0.98;
-      letter-spacing: 0.03em;
-      pointer-events: none;
-      padding: 0 10vw;
-      text-align: center;
+
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.75);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
     }
-    @media (max-width: 500px) {
-      #route-btn { font-size: 1rem; min-width: 110px; padding: 9px 8px;}
-      .pirate-x { width:28px; height:28px; font-size: 1.45rem; }
-      .pirate-compass { font-size: 1.05rem; }
-      #bottom-overlay { height: 50px; }
-      #bottom-overlay .overlay-text { font-size: 0.83rem; padding: 0 4vw;}
-      .leaflet-popup-content-wrapper { font-size: 0.93rem; }
+
+    .content {
+      z-index: 1;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 5px #000;
+    }
+
+    #countdown {
+      font-size: 2em;
+      margin-top: 10px;
+      color: #ffd700;
+      text-shadow: 1px 1px 4px #000;
+    }
+
+    img.skull {
+      width: 150px;
+      height: auto;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
-  <button id="route-btn"><span style="font-size:1.18em">🧭</span> Проложить пиратский маршрут!</button>
-  <div id="map-container">
-    <div id="sepia-layer"></div>
-    <div id="map"></div>
+  <div class="overlay"></div>
+  <div class="content">
+    <img src="https://i.imgur.com/dD0U8qv.png" alt="Пиратский череп" class="skull">
+    <h1>Время ещё не пришло...</h1>
+    <div id="countdown">Загрузка...</div>
   </div>
-  <div id="bottom-overlay">
-    <div class="overlay-text">Пиратский совет: ищи сокровища только по компасу!</div>
-  </div>
-  <audio id="pirate-audio" src="https://cdn.pixabay.com/audio/2022/03/19/audio_9b454a3d9f.mp3"></audio>
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
   <script>
-    const treasureLatLng = [55.7558, 37.6173];
-    let routeLine, userMarker;
-    const map = L.map('map', {
-      zoomControl: false,
-      attributionControl: true
-    }).setView(treasureLatLng, 13);
+    const launchTime = new Date("2025-05-22T12:00:00"); // ЗАДАЙ время запуска
+    const countdown = document.getElementById('countdown');
 
-    const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+    function updateCountdown() {
+      const now = new Date();
+      const diff = launchTime - now;
 
-    map.whenReady(function() {
-      const mapPane = document.querySelector('.leaflet-map-pane');
-      const sepiaLayer = document.getElementById('sepia-layer');
-      if (mapPane && sepiaLayer && !sepiaLayer.contains(mapPane)) {
-        sepiaLayer.appendChild(mapPane);
-      }
-      map.invalidateSize();
-    });
-
-    // Центрированный крупный крестик
-    const pirateX = L.divIcon({
-      className: 'pirate-x',
-      html: '✖',
-      iconSize: [48, 48],
-      iconAnchor: [24, 24],
-      popupAnchor: [0, -24]
-    });
-    L.marker(treasureLatLng, {icon: pirateX}).addTo(map)
-      .bindPopup('☠️ <b>Вот здесь зарыт твой клад!</b> ☠️<br>Йо-хо-хо и бутылка рома!')
-      .openPopup();
-
-    function getCompassIcon() {
-      return L.divIcon({
-        className: 'pirate-compass',
-        html: '🧭',
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
-      });
-    }
-    const pirateAudio = document.getElementById('pirate-audio');
-    function playPirateAudio() {
-      pirateAudio.currentTime = 0;
-      pirateAudio.play();
-    }
-    document.getElementById('route-btn').onclick = function() {
-      if (routeLine) {
-        map.removeLayer(routeLine); routeLine = null;
-      }
-      if (userMarker) {
-        map.removeLayer(userMarker); userMarker = null;
-      }
-      if (!navigator.geolocation) {
-        alert("Твой корабль не знает, где находится! (Нет геолокации)");
+      if (diff <= 0) {
+        window.location.href = "main.html"; // переход на квест
         return;
       }
-      document.getElementById('route-btn').innerHTML = "<span style='font-size:1.1em'>🏴‍☠️</span> Ищем твой корабль...";
-      navigator.geolocation.getCurrentPosition(success, error, {enableHighAccuracy: true});
-    };
-    function error() {
-      alert("Арр! Не удалось найти твой корабль. Разреши доступ к геолокации.");
-      document.getElementById('route-btn').innerHTML = "<span style='font-size:1.18em'>🧭</span> Проложить пиратский маршрут!";
+
+      const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
+      const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, '0');
+      const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+
+      countdown.textContent = `${hours}:${minutes}:${seconds}`;
     }
-    function success(pos) {
-      const userLatLng = [pos.coords.latitude, pos.coords.longitude];
-      document.getElementById('route-btn').innerHTML = "<span style='font-size:1.1em'>🦜</span> Строим маршрут...";
-      const url = `https://router.project-osrm.org/route/v1/foot/${userLatLng[1]},${userLatLng[0]};${treasureLatLng[1]},${treasureLatLng[0]}?overview=full&geometries=geojson&alternatives=false&steps=false`;
-      fetch(url)
-        .then(resp => resp.json())
-        .then(data => {
-          if (!data.routes || !data.routes.length) throw new Error('Нет маршрута');
-          const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-          routeLine = L.polyline(coords, {
-            color: '#ff2222',
-            weight: 6,
-            opacity: 0.92,
-            dashArray: '10, 16',
-            lineJoin: 'round'
-          }).addTo(map);
-          map.fitBounds(routeLine.getBounds(), {padding: [40,120]});
-          userMarker = L.marker(userLatLng, {icon: getCompassIcon()})
-            .addTo(map)
-            .bindPopup("🧭 <b>Вот твой корабль, капитан!</b><br>Курс на клад проложен!");
-          userMarker.openPopup();
-          document.getElementById('route-btn').innerHTML = "<span style='font-size:1.18em'>🧭</span> Маршрут найден!";
-          playPirateAudio();
-          setTimeout(()=>document.getElementById('route-btn').innerHTML = "<span style='font-size:1.18em'>🧭</span> Проложить пиратский маршрут!", 3500);
-        })
-        .catch(()=>{
-          alert("Ай-ай! Не удалось проложить маршрут. Видать, шторм помешал.");
-          document.getElementById('route-btn').innerHTML = "<span style='font-size:1.18em'>🧭</span> Проложить пиратский маршрут!";
-        });
-    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
   </script>
 </body>
 </html>
