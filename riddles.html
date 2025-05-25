@@ -7,17 +7,23 @@
   <link rel="icon" href="favicon.png" />
   <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
   <audio id="tubeSound" src="tube-open.mp3" preload="auto"></audio>
-
+  <link rel="preload" as="image" href=tube_open.png>
+  <link rel="preload" as="image" href=tube_closed.png>
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Pirata One', cursive;
+      font-family: 'Pirata One', 'Forum', serif;
       background: url('background1.png') no-repeat center center fixed;
       background-size: cover;
-      color: #fff;
-      text-align: center;
-      overflow-x: hidden;
+      transition: background-image 1s ease-in-out;
+      color: #f5f5dc;
+      position: relative;
+        background-image: url('background1.png');
+      background-size: cover;           
+      background-position: center center;
+      background-repeat: no-repeat;      
+      background-attachment: fixed;      
     }
 
     .container {
