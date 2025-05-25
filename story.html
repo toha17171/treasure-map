@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Легенда о Сокровище Роджера</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <!-- Шрифты -->
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Forum&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Pirata One', 'Forum', serif;
+      background: url('background1.png') no-repeat center center fixed;
+      background-size: cover;
+      transition: background-image 1s ease-in-out;
+      color: #f5f5dc;
+      position: relative;
+    }
+
+    body.easter-active::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.75);
+      z-index: 1;
+      pointer-events: none;
+      animation: fadein 0.5s ease-in-out;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .logo {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 50px;
+      height: 50px;
+      z-index: 10;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 15px auto 50px;
+      padding: 40px 30px;
+      background: rgba(0, 0, 0, 0.65);
+      border-radius: 12px;
+      box-shadow: 0 0 20px #000;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 30px;
+      color: #ffd700;
+      text-shadow: 2px 2px 5px #000;
+    }
+
+    p {
+      font-size: 1.15em;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      font-family: 'Forum', serif;
+    }
+
+    img.pirate {
+      width: 100%;
+      max-width: 500px;
+      margin: 20px auto;
+      display: block;
+      border: 5px solid #ffd700;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #000;
+      cursor: pointer;
+      transition: filter 0.6s, transform 0.6s, opacity 0.6s;
+    }
+
+    a.button {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 14px 32px;
+      font-size: 1.6em;
+      background-color: #d4af37;
+      color: #000;
+      text-decoration: none;
+      border-radius: 10px;
+      font-family: 'Pirata One', 'Forum', serif;
+      box-shadow: 0 0 10px #d4af37;
+      transition: background-color 0.3s ease;
+    }
+
+    a.button:hover {
+      background-color: #ffd700;
+    }
+
+    .winked {
+      animation: wink 0.6s ease-in-out;
+    }
+
+    @keyframes wink {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(0.1); }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin-top: 80px;
+        padding: 25px 15px;
+      }
+
+      h1 {
+        font-size: 2em;
+      }
+
+      p {
+        font-size: 1em;
+      }
+    }
+    img.map {
+      width: 100%;
+      max-width: 500px;
+      margin: 20px auto;
+      display: block;
+      border: 5px solid #ffd700;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #000;
+      cursor: zoom-in;
+    }
+
+    /* Модальное окно карты */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(2px);
+    }
+
+    .modal-content {
+      display: block;
+      margin: 50px auto;
+      max-width: 90vw;
+      max-height: 90vh;
+      border: 4px solid #ffd700;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #000;
+    }
+
+  </style>
+</head>
+
+<body>
+  <!-- Логотип -->
+  <img class="logo" src="logo.png" alt="Логотип" />
+
+  <!-- Аудио -->
+  <audio id="yohohoSound" src="yohoho.mp3" preload="auto"></audio>
+
+  <div class="container">
+    <h1 id="mainTitle">Легенда о Сокровище Роджера</h1>
+    <div id="secretMessage" style="display: none; font-size: 1.3em; margin-top: 20px;">
+      🧭 Тайный путь активирован! Следуй за компасом...
+    </div>
+    <!-- Пират -->
+    <img src="pirate.jpg" alt="Пират Роджер" class="pirate" id="pirateImage">
+
+    <p>
+      Много лет назад в водах Карибского моря правил самый безжалостный из пиратов — капитан Роджер.
+      Его имя внушало ужас, а корабль <em>"Бездна"</em> был проклятием для торговцев и фрегатов.
+    </p>
+    <p>
+      Роджер обладал невероятным сокровищем — и, предчувствуя гибель, он спрятал его. Чтобы добраться до него,
+      нужен древний артефакт: <em>"Монета"</em>.
+    </p>
+    <p>
+      Говорят, прилив выбросил её на берег. Теперь она у тебя.
+      Но путь к кладу откроется только тому, кто разгадает тайны пирата и сложит слово силы...
+    </p>
+    <img src="map.jpg" alt="Карта сокровищ" class="map" id="treasureMap" onclick="openMapModal()">
+
+    <!-- Модальное окно -->
+  <div id="mapModal" class="modal" onclick="closeMapModal()">
+      <img src="map.jpg" class="modal-content" />
+  </div>
+    <a href="index.html" class="button">Начать путь к сокровищу</a>
+  </div>
+
+  <script>
+    let eyeClicks = 0;
+    const pirateImg = document.getElementById('pirateImage');
+    const sound = document.getElementById('yohohoSound');
+    const body = document.body;
+
+    pirateImg.addEventListener('click', function (e) {
+      const rect = pirateImg.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      const eyeArea = {
+        x: rect.width * 0.25,
+        y: rect.height * 0.3,
+        w: rect.width * 0.2,
+        h: rect.height * 0.2
+      };
+
+      const inEye =
+        clickX >= eyeArea.x && clickX <= eyeArea.x + eyeArea.w &&
+        clickY >= eyeArea.y && clickY <= eyeArea.y + eyeArea.h;
+
+    if (inEye) {
+      eyeClicks++;
+      if (eyeClicks === 5) {
+        eyeClicks = 0;
+
+        // Добавим классы и заменим фон + изображение
+        pirateImg.classList.add('winked');
+        body.classList.add('easter-active');
+        sound.play();
+
+        // Плавно заменить картинку пирата
+        pirateImg.style.opacity = 0;
+        setTimeout(() => {
+          pirateImg.src = "pirate_easter.png";
+          pirateImg.style.opacity = 1;
+        }, 400);
+
+        // Плавно заменить фон
+        body.style.backgroundImage = "url('background2.png')";
+        document.querySelector("h1").textContent = "Сокровище пробудилось!";
+          const button = document.querySelector(".button");
+          button.style.backgroundColor = "#ff0000";
+
+          button.textContent = "Ты готов?";
+          button.style.fontSize = "2.8em";
+          const secret = document.getElementById("secretMessage");
+          secret.style.display = "block";
+      }
+
+
+
+      }
+    });
+    function openMapModal() {
+        document.getElementById('mapModal').style.display = 'block';
+      }
+
+      function closeMapModal() {
+        document.getElementById('mapModal').style.display = 'none';
+      }
+
+  </script>
+</body>
+</html>
