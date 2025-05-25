@@ -6,6 +6,7 @@
   <title>Секретный код тубуса</title>
   <link rel="icon" href="favicon.png" />
   <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+  <audio id="tubeSound" src="tube-open.mp3" preload="auto"></audio>
 
   <style>
     body {
@@ -40,7 +41,7 @@
       font-size: 1.2em;
       display: flex;
       flex-direction: column;
-      align-items: center;  /* чтобы всё выровнялось по центру */
+      align-items: center;  
       margin: 30px 0;
     }
 
@@ -94,7 +95,6 @@
       box-shadow: 0 0 20px #000;
     }
 
-    /* Модальное окно */
     .modal {
       display: none;
       position: fixed;
@@ -122,7 +122,6 @@
       to   { opacity: 1; transform: scale(1); }
     }
 
-    /* Мобильная адаптация */
     @media (max-width: 600px) {
       h1 {
         font-size: 2em;
@@ -201,14 +200,13 @@
     <img id="tubeImage" src="tube_closed.png" alt="Тубус закрыт">
   </div>
 
-  <!-- Модальное окно карты -->
   <div id="mapModal" class="modal" onclick="closeMapModal()">
     <img src="map.jpg" class="modal-content" alt="Карта сокровищ">
   </div>
 
   <script>
     const code = ['_', '_', '_', '_'];
-    const letters = ['o', 'z', 'o', 'n'];
+    const letters = ['O', 'Z', 'O', 'N'];
     let progress = [false, false, false, false];
 
     function checkAnswer(index, correctLetter) {
@@ -234,13 +232,18 @@
     }
 
     function openTube() {
-      const tube = document.getElementById('tubeImage');
-      tube.src = "tube_open.png";
-      tube.style.cursor = "pointer";
-      tube.onclick = openMapModal;
+    const tube = document.getElementById('tubeImage');
+    const sound = document.getElementById('tubeSound');
 
-      document.getElementById('openTube').style.display = 'none';
+    tube.src = "tube_open.png";
+    tube.style.cursor = "pointer";
+    tube.onclick = openMapModal;
+
+    document.getElementById('openTube').style.display = 'none';
+
+    sound.play();
     }
+
 
     function openMapModal() {
       document.getElementById('mapModal').style.display = 'flex';

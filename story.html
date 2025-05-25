@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <!-- Предзагрузка изображения пирата -->
+
   <link rel="preload" as="image" href="pirate_easter.png">
   <link rel="preload" as="image" href="background2.png">
   <link rel="preload" as="image" href="map.jpg">
@@ -12,12 +12,12 @@
   <title>Легенда о Сокровище Роджера</title>
   <link rel="icon" type="image/png" href="favicon.png" />
 
-  <!-- Шрифты -->
+  
   <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Forum&display=swap" rel="stylesheet" />
 
   <style>
-      /* Прелоадер */
+      
   #preloader {
     position: fixed;
     top: 0;
@@ -44,7 +44,7 @@
     100% { transform: scale(1); opacity: 0.8; }
   }
 
-  /* Скрытие прелоадера */
+
   #preloader.hidden {
     opacity: 0;
     visibility: hidden;
@@ -60,10 +60,10 @@
       color: #f5f5dc;
       position: relative;
         background-image: url('background1.png');
-      background-size: cover;            /* растянуть под весь экран */
-      background-position: center center;/* центрировать */
-      background-repeat: no-repeat;      /* не повторять */
-      background-attachment: fixed;      /* зафиксировать (только на десктопе) */
+      background-size: cover;           
+      background-position: center center;
+      background-repeat: no-repeat;      
+      background-attachment: fixed;      
     }
 
     body.easter-active::before {
@@ -183,7 +183,6 @@
       cursor: zoom-in;
     }
 
-    /* Модальное окно карты */
     .modal {
       display: none;
       position: fixed;
@@ -207,6 +206,7 @@
       box-shadow: 0 0 20px #000;
     }
     
+    
   </style>
 </head>
 <script>
@@ -220,18 +220,19 @@
   <div id="preloader">
     <img src="loader-skull.png" alt="Загрузка..." class="loader-logo">
   </div>
-  <!-- Логотип -->
   <img class="logo" src="logo.png" alt="Логотип" />
-
-  <!-- Аудио -->
   <audio id="yohohoSound" src="yohoho.mp3" preload="auto"></audio>
 
   <div class="container">
     <h1 id="mainTitle">Легенда о Сокровище Роджера</h1>
-    <div id="secretMessage" style="display: none; font-size: 1.3em; margin-top: 20px;">
-      🧭 Тайный путь активирован! Следуй за компасом...
+    <div id="secretMessage" style="display: none; font-size: 1.4em; margin-top: 20px; text-align: left;">
+       Тайный путь активирован!
+       <br><em>O</em> снова вечности — круг без начала,
+       <br><em>Z</em> меиный изгиб молнии в танце причала.
+       <br><em>O</em> траженье себя в повторенье времён,
+       <br><em>N</em> ить тишины меж созвездий и звёздных имён.
+
     </div>
-    <!-- Пират -->
     <img src="pirate.jpg" alt="Пират Роджер" class="pirate" id="pirateImage">
 
     <p>
@@ -246,14 +247,9 @@
       Говорят, прилив выбросил её на берег. Теперь она у тебя.
       Но путь к кладу откроется только тому, кто разгадает тайны пирата и сложит слово силы...
     </p>
-    <img src="map.jpg" alt="Карта сокровищ" class="map" id="treasureMap" onclick="openMapModal()">
+<a href="riddles.html" class="button">Начать путь к сокровищу</a>
+</div>
 
-    <!-- Модальное окно -->
-  <div id="mapModal" class="modal" onclick="closeMapModal()">
-      <img src="map.jpg" class="modal-content" />
-  </div>
-    <a href="index.html" class="button">Начать путь к сокровищу</a>
-  </div>
 
   <script>
     let eyeClicks = 0;
