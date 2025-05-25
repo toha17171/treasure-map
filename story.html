@@ -58,6 +58,11 @@
       transition: background-image 1s ease-in-out;
       color: #f5f5dc;
       position: relative;
+        background-image: url('background1.jpg');
+      background-size: cover;            /* растянуть под весь экран */
+      background-position: center center;/* центрировать */
+      background-repeat: no-repeat;      /* не повторять */
+      background-attachment: fixed;      /* зафиксировать (только на десктопе) */
     }
 
     body.easter-active::before {
