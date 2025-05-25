@@ -12,7 +12,7 @@
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Pirata One', serif;
+      font-family: 'Pirata One', cursive;
       background: url('background1.png') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
@@ -150,100 +150,89 @@
     <h1>Разгадай код тубуса</h1>
 
     <div class="riddle">
-      <p>Нет начала, нет конца,
-        <br>Скользит по миру без лица.
-        <br>И в каждой капле, в каждом дне
-        <br>Он прячется — в тебе, во мне.
-        <br>Он символ вечности и снов,
-        <br>И в центре мира — без углов.</p>
-      <input type="text" id="answer1" placeholder="Ответ">
-      <button onclick="checkAnswer(1, 'o')">Проверить</button>
-    </div>
+  <p>Круг, кольцо или ноль,
+    <br>Он похож на бублик твой.
+    <br>Без начала и конца,
+    <br>Что за буква? Назови, дружок, её!</p>
+</div>
 
-    <div class="riddle">
-      <p>На небесах вспорхнёт дракон,
-        <br>Резной клинок из света злон.
-        <br>В изгибах змеи — знак сраженья,
-        <br>Он буквой стал в безумном мгленьи.
-        <br>В конце — алфавита воин.
-        <br>Кто же он, кто меч зигзагом строит?</p>
-      <input type="text" id="answer2" placeholder="Ответ">
-      <button onclick="checkAnswer(2, 'z')">Проверить</button>
-    </div>
+<div class="riddle">
+  <p>Зигзагом молния блеснула,
+    <br>Буква эта проскользнула.
+    <br>На конце алфавита,
+    <br>Её форма знаменитa!</p>
+</div>
 
-    <div class="riddle">
-      <p>Я двойник в зеркале мечты,
-        <br>И повторяюсь, как часы.
-        <br>Летят минуты по спирали,
-        <br>А я в их центре, как в медали.
-        <br>Без формы — я, и всё же весь,
-        <br>Ты мной дважды пронесёшься здесь.</p>
-      <input type="text" id="answer3" placeholder="Ответ">
-      <button onclick="checkAnswer(3, 'o')">Проверить</button>
-    </div>
+<div class="riddle">
+  <p>Эта буква — как яйцо,
+    <br>Повторим мы вновь её.
+    <br>И опять без уголков,
+    <br>Назови её, дружок!</p>
+</div>
 
-    <div class="riddle">
-      <p>Я след от ветра на стене,
-        <br>Я нота в ночи и в тишине.
-        <br>Я буква, скрытая в «неведом»,
-        <br>Мелькну в словах, где тьма с обедом.
-        <br>За «М» иду, вперёд гляжу,
-        <br>В финале слова я сторожу.</p>
-      <input type="text" id="answer4" placeholder="Ответ">
-      <button onclick="checkAnswer(4, 'n')">Проверить</button>
-    </div>
+<div class="riddle">
+  <p>Буква с видом, словно мост,
+    <br>На ногах стоит непросто.
+    <br>Две палки с линией одной —
+    <br>Назови-ка, друг, её скорей!</p>
+</div>
 
-    <div id="codeBox">_ _ _ _</div>
+    <!-- Ввод полного кода -->
+    <div id="codeBox" style="margin-top: 30px;">
+        <input type="text" id="fullCode" placeholder="_ _ _ _" maxlength="4"
+                
+                style="font-size: 1.5em; text-align: center; width: 200px; letter-spacing: 5px; text-transform: uppercase;">
+          <div id="errorMessage" style="display: none; color: #ff5555; margin-top: 10px; font-size: 1.1em;">
+    Такие символы не допустимы. Смотри внимательно на тубус.
+  </div>
+            </div>
 
-    <button id="openTube" onclick="openTube()">Открыть тубус</button>
+        <button id="checkCodeBtn" onclick="submitCode()">Проверить код</button>
+        <button id="openTube" style="display: none;" onclick="openTube()">Открыть тубус</button>
 
-    <img id="tubeImage" src="tube_closed.png" alt="Тубус закрыт">
+
+
+
+    <!-- Тубус -->
+    <img id="tubeImage" src="tube_closed.png" alt="Тубус закрыт" style="display: block; margin: 30px auto; max-width: 100%;">
+
+    <!-- Аудио -->
+    <audio id="tubeSound" src="tube-open.mp3" preload="auto"></audio>
   </div>
 
-  <div id="mapModal" class="modal" onclick="closeMapModal()">
-    <img src="map.jpg" class="modal-content" alt="Карта сокровищ">
+  <!-- Модальное окно карты -->
+  <div id="mapModal" class="modal" onclick="closeMapModal()" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); justify-content: center; align-items: center;">
+    <img src="map.jpg" class="modal-content" alt="Карта сокровищ" style="max-width: 90vw; max-height: 90vh; border: 5px solid #ffd700; border-radius: 10px;">
   </div>
 
   <script>
-    const code = ['_', '_', '_', '_'];
-    const letters = ['O', 'Z', 'O', 'N'];
-    let progress = [false, false, false, false];
+    function submitCode() {
+    const input = document.getElementById('fullCode');
+    const value = input.value.trim().toUpperCase();
 
-    function checkAnswer(index, correctLetter) {
-      const input = document.getElementById('answer' + index);
-      const val = input.value.trim().toLowerCase();
-
-      if (val === correctLetter && !progress[index - 1]) {
-        code[index - 1] = correctLetter.toUpperCase();
-        progress[index - 1] = true;
-        input.disabled = true;
-        updateCodeDisplay();
-
-        if (progress.every(p => p)) {
-          document.getElementById('openTube').style.display = 'inline-block';
-        }
-      } else {
-        input.style.border = "2px solid red";
-      }
+    if (value === 'OZON') {
+        input.style.border = "3px solid #ffd700";
+        input.disabled = true; // блокируем поле
+        document.getElementById('checkCodeBtn').style.display = 'none'; // скрываем кнопку
+        document.getElementById('openTube').style.display = 'inline-block';
+    } else {
+        input.style.border = "3px solid red";
+    }
     }
 
-    function updateCodeDisplay() {
-      document.getElementById('codeBox').textContent = code.join(' ');
-    }
 
     function openTube() {
-    const tube = document.getElementById('tubeImage');
-    const sound = document.getElementById('tubeSound');
+      const tube = document.getElementById('tubeImage');
+      const sound = document.getElementById('tubeSound');
 
-    tube.src = "tube_open.png";
-    tube.style.cursor = "pointer";
-    tube.onclick = openMapModal;
+      tube.src = "tube_open.png";
+      tube.style.cursor = "pointer";
+      tube.onclick = openMapModal;
 
-    document.getElementById('openTube').style.display = 'none';
+      document.getElementById('openTube').style.display = 'none';
 
-    sound.play();
+      sound.play();
     }
-
 
     function openMapModal() {
       document.getElementById('mapModal').style.display = 'flex';
@@ -254,4 +243,5 @@
     }
   </script>
 </body>
+
 </html>
