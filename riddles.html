@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Секретный код тубуса</title>
+  <link rel="icon" href="favicon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Pirata One', serif;
+      background: url('background1.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 40px 20px;
+      background: rgba(0, 0, 0, 0.75);
+      border-radius: 10px;
+      box-shadow: 0 0 20px #000;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.8em;
+      color: #ffd700;
+      margin-bottom: 20px;
+    }
+
+    .riddle {
+      margin: 30px 0;
+      font-size: 1.2em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;  /* чтобы всё выровнялось по центру */
+      margin: 30px 0;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 400px;
+      box-sizing: border-box;
+      margin-top: 10px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 12px 24px;
+      font-size: 1em;
+      background-color: #d4af37;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Pirata One', serif;
+    }
+
+    #codeBox {
+      margin-top: 30px;
+      font-size: 2em;
+      letter-spacing: 15px;
+      color: #ffd700;
+      word-spacing: 10px;
+    }
+
+    #openTube {
+      display: none;
+      margin-top: 30px;
+      font-size: 1.3em;
+      background-color: #ffd700;
+      padding: 14px 30px;
+      border-radius: 10px;
+    }
+
+    #tubeImage {
+      display: block;
+      margin: 40px auto 0;
+      max-width: 100%;
+      height: auto;
+      border: 5px solid #ffd700;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #000;
+    }
+
+    /* Модальное окно */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      max-width: 90vw;
+      max-height: 90vh;
+      border: 5px solid #ffd700;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #000;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    /* Мобильная адаптация */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2em;
+      }
+
+      input[type="text"] {
+        font-size: 1.1em;
+        width: 95%;
+      }
+
+      button, #openTube {
+        font-size: 1em;
+        width: 90%;
+        max-width: 300px;
+      }
+
+      #codeBox {
+        font-size: 1.8em;
+        letter-spacing: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Разгадай код тубуса</h1>
+
+    <div class="riddle">
+      <p>Нет начала, нет конца,
+        <br>Скользит по миру без лица.
+        <br>И в каждой капле, в каждом дне
+        <br>Он прячется — в тебе, во мне.
+        <br>Он символ вечности и снов,
+        <br>И в центре мира — без углов.</p>
+      <input type="text" id="answer1" placeholder="Ответ">
+      <button onclick="checkAnswer(1, 'o')">Проверить</button>
+    </div>
+
+    <div class="riddle">
+      <p>На небесах вспорхнёт дракон,
+        <br>Резной клинок из света злон.
+        <br>В изгибах змеи — знак сраженья,
+        <br>Он буквой стал в безумном мгленьи.
+        <br>В конце — алфавита воин.
+        <br>Кто же он, кто меч зигзагом строит?</p>
+      <input type="text" id="answer2" placeholder="Ответ">
+      <button onclick="checkAnswer(2, 'z')">Проверить</button>
+    </div>
+
+    <div class="riddle">
+      <p>Я двойник в зеркале мечты,
+        <br>И повторяюсь, как часы.
+        <br>Летят минуты по спирали,
+        <br>А я в их центре, как в медали.
+        <br>Без формы — я, и всё же весь,
+        <br>Ты мной дважды пронесёшься здесь.</p>
+      <input type="text" id="answer3" placeholder="Ответ">
+      <button onclick="checkAnswer(3, 'o')">Проверить</button>
+    </div>
+
+    <div class="riddle">
+      <p>Я след от ветра на стене,
+        <br>Я нота в ночи и в тишине.
+        <br>Я буква, скрытая в «неведом»,
+        <br>Мелькну в словах, где тьма с обедом.
+        <br>За «М» иду, вперёд гляжу,
+        <br>В финале слова я сторожу.</p>
+      <input type="text" id="answer4" placeholder="Ответ">
+      <button onclick="checkAnswer(4, 'n')">Проверить</button>
+    </div>
+
+    <div id="codeBox">_ _ _ _</div>
+
+    <button id="openTube" onclick="openTube()">Открыть тубус</button>
+
+    <img id="tubeImage" src="tube_closed.png" alt="Тубус закрыт">
+  </div>
+
+  <!-- Модальное окно карты -->
+  <div id="mapModal" class="modal" onclick="closeMapModal()">
+    <img src="map.jpg" class="modal-content" alt="Карта сокровищ">
+  </div>
+
+  <script>
+    const code = ['_', '_', '_', '_'];
+    const letters = ['o', 'z', 'o', 'n'];
+    let progress = [false, false, false, false];
+
+    function checkAnswer(index, correctLetter) {
+      const input = document.getElementById('answer' + index);
+      const val = input.value.trim().toLowerCase();
+
+      if (val === correctLetter && !progress[index - 1]) {
+        code[index - 1] = correctLetter.toUpperCase();
+        progress[index - 1] = true;
+        input.disabled = true;
+        updateCodeDisplay();
+
+        if (progress.every(p => p)) {
+          document.getElementById('openTube').style.display = 'inline-block';
+        }
+      } else {
+        input.style.border = "2px solid red";
+      }
+    }
+
+    function updateCodeDisplay() {
+      document.getElementById('codeBox').textContent = code.join(' ');
+    }
+
+    function openTube() {
+      const tube = document.getElementById('tubeImage');
+      tube.src = "tube_open.png";
+      tube.style.cursor = "pointer";
+      tube.onclick = openMapModal;
+
+      document.getElementById('openTube').style.display = 'none';
+    }
+
+    function openMapModal() {
+      document.getElementById('mapModal').style.display = 'flex';
+    }
+
+    function closeMapModal() {
+      document.getElementById('mapModal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
