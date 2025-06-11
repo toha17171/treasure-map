@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Секретный код тубуса</title>
   <link rel="icon" href="favicon.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Forum&display=swap" rel="stylesheet">
   <audio id="tubeSound" src="tube-open.mp3" preload="auto"></audio>
   <link rel="preload" as="image" href=tube_open.png>
   <link rel="preload" as="image" href=tube_closed.png>
@@ -49,6 +49,7 @@
       flex-direction: column;
       align-items: center;  
       margin: 30px 0;
+      font-family: 'Pirata One', serif;
     }
 
     input[type="text"] {
@@ -122,7 +123,43 @@
       box-shadow: 0 0 20px #000;
       animation: fadeIn 0.4s ease-in-out;
     }
+    .map-flip {
+      width: 90vw;
+      max-width: 600px;
+      perspective: 1200px;
+    }
 
+    .map-inner {
+      position: relative;
+      width: 100%;
+      padding-top: 66%; /* соотношение сторон */
+      transform-style: preserve-3d;
+      transition: transform 0.8s ease;
+    }
+
+    .map-front, .map-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 5px solid #ffd700;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #000;
+      backface-visibility: hidden;
+      top: 0; left: 0;
+      object-fit: cover;
+    }
+
+    .map-back {
+      transform: rotateY(180deg);
+    }
+
+    .map-flip.flipped .map-inner {
+      transform: rotateY(180deg);
+    }
+    #mapBacksideText {
+      font-family: 'Courier New', monospace;
+      white-space: pre-wrap;
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.95); }
       to   { opacity: 1; transform: scale(1); }
@@ -149,6 +186,7 @@
         letter-spacing: 10px;
       }
     }
+      
   </style>
 </head>
 <body>
@@ -159,41 +197,42 @@
   шторм выбросил на берег потёртый кожаный тубус. Он был c кодовым замком и <em>биркой</em> с загадками.
 </p>
     
-    <p>Текст на бирке:</p>
-    
-    <div class="riddle">
-  <p>Круг, кольцо или ноль,
-    <br>Он похож на бублик твой.
-    <br>Без начала и конца,
-    <br>Что за буква? Назови, дружок, её!</p>
-</div>
+  <h1>Текст на бирке:</h1>
 
-<div class="riddle">
-  <p>Зигзагом молния блеснула,
-    <br>Буква эта проскользнула.
-    <br>На конце алфавита,
-    <br>Её форма знаменита!</p>
-</div>
+  <div class="riddle">
+    <p>
+      Во мраке ночи,<br>
+      При свете луны,<br>
+      Откроется клад,<br>
+      Пират будет рад!
+    </p>
+    <p>
+      Жидкое золото —<br>
+      Оно словно яд,<br>
+      Пустишь по венам —<br>
+      Эдемовский сад!
+    </p>
+    <p>
+      Лишь храбрейший моряк<br>
+      Осилит и так,<br>
+      Но что бы не свалиться с ног —<br>
+      Добавь кровавого мяса кусок.
+    </p>
+    <p>
+      Ни власть, ни признанье<br>
+      Не нужны морякам,<br>
+      Только жидкое золото<br>
+      Приравнит нас к богам!
+    </p>
+ 
+  </div>
 
-<div class="riddle">
-  <p>Эта буква — как яйцо,
-    <br>Повторим мы вновь её.
-    <br>И опять без уголков,
-    <br>Назови её, дружок!</p>
-</div>
-
-<div class="riddle">
-  <p>Буква с видом, словно мост,
-    <br>На ногах стоит непросто.
-    <br>Две палки с линией одной —
-    <br>Назови-ка, друг, её скорей!</p>
-</div>
 
     <!-- Ввод полного кода -->
     <div id="codeBox" style="margin-top: 30px;">
-        <input type="text" id="fullCode" placeholder="_ _ _ _" maxlength="4"
+        <input type="text" id="fullCode" placeholder="_ _ _" maxlength="3"
                 
-                style="font-size: 1.5em; text-align: center; width: 200px; letter-spacing: 5px; text-transform: uppercase;">
+                style="font-size: 1.5em; text-align: center; width: 150px; letter-spacing: 5px; text-transform: uppercase;">
           <div id="errorMessage" style="display: none; color: #ff5555; margin-top: 10px; font-size: 1.1em;">
     Такие символы не допустимы. Смотри внимательно на тубус.
   </div>
@@ -212,17 +251,23 @@
     <audio id="tubeSound" src="tube-open.mp3" preload="auto"></audio>
   </div>
 
-  <!-- Модальное окно карты -->
-  <div id="mapModal" class="modal" onclick="closeMapModal()" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); justify-content: center; align-items: center;">
-    <img src="map.jpg" class="modal-content" alt="Карта сокровищ" style="max-width: 90vw; max-height: 90vh; border: 5px solid #ffd700; border-radius: 10px;">
+<!-- Модальное окно с переворачиваемой картой -->
+<div id="mapModal" class="modal" style="display: none;" onclick="closeMapModal()">
+  <div class="map-flip" onclick="flipMap(event)">
+    <div class="map-inner">
+      <img src="map.jpg" class="map-front" alt="Карта сокровищ">
+      <img src="map_back.jpg" class="map-back" alt="Оборот карты">
+    </div>
   </div>
+</div>
+
 
   <script>
     function submitCode() {
     const input = document.getElementById('fullCode');
     const value = input.value.trim().toUpperCase();
 
-    if (value === 'OZON') {
+    if (value === 'ROM', 'rom', 'ром', 'РОМ') {
         input.style.border = "3px solid #ffd700";
         input.disabled = true; // блокируем поле
         document.getElementById('checkCodeBtn').style.display = 'none'; // скрываем кнопку
@@ -253,6 +298,27 @@
     function closeMapModal() {
       document.getElementById('mapModal').style.display = 'none';
     }
+
+    function flipMap(event) {
+      event.stopPropagation(); // чтобы не закрывать модалку
+      const wrapper = event.currentTarget;
+      wrapper.classList.toggle('flipped');
+    }
+    function typeText(text, elementId, speed = 35) {
+      const el = document.getElementById(elementId);
+      el.innerHTML = "";
+      let i = 0;
+      const interval = setInterval(() => {
+        el.innerHTML += text.charAt(i);
+        i++;
+        if (i >= text.length) clearInterval(interval);
+      }, speed);
+    }
+
+    function openMapModal() {
+      document.getElementById('mapModal').style.display = 'flex';
+    }
+
   </script>
 </body>
 
